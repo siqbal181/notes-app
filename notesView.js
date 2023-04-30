@@ -3,20 +3,20 @@ class NotesView {
     this.model = model;
     this.mainContainerEl = document.querySelector('#main-container');
     this.addNoteButton = document.querySelector('#note-button');
-
+    
     this.addNoteButton.addEventListener('click', () => {
-      this.model.addNote();
+      const noteInput = document.querySelector('#note-input').value;
+      this.model.addNote(noteInput);
       this.displayNotes();
     });
   }
 
   displayNotes() {
-    const noteInput = document.querySelector('#note-input').value;
     const allNotes = this.model.getNotes();
 
     allNotes.forEach(note => {
       const noteEl = document.createElement('div');
-      noteEl.innerText = noteInput;
+      noteEl.textContent = note;
       noteEl.className = 'note';
       this.mainContainerEl.append(noteEl);
     })

@@ -7,7 +7,7 @@ const NotesModel = require('./notesModel');
 const NotesView = require('./notesView');
 
 describe('Notes view', () => {
-  xit('displays two notes', () => {
+  it('displays two notes', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
     const model = new NotesModel;
     const view = new NotesView(model);
@@ -23,11 +23,13 @@ describe('Notes view', () => {
     const view = new NotesView(model);
 
     const noteInput = document.querySelector('#note-input');
-    const addNoteButton = document.querySelector('#note-button');
-
     noteInput.value = 'Here is my note to test!!';
+
+    const addNoteButton = document.querySelector('#note-button');
     addNoteButton.click();
 
-    expect(document.querySelector('#note').innerText).toBe('Here is my note to test!!');
+    expect(document.querySelector('div.note').textContent).toEqual('Here is my note to test!!');
+
+
   })
 });
