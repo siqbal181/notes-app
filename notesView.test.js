@@ -29,7 +29,5 @@ describe('Notes view', () => {
     addNoteButton.click();
 
     expect(document.querySelector('div.note').textContent).toEqual('Here is my note to test!!');
-
-
   })
 });
