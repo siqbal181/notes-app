@@ -12,6 +12,7 @@ class NotesView {
   }
 
   displayNotes() {
+    document.querySelector('#note-input').value = ''
     const allNotes = this.model.getNotes();
 
     allNotes.forEach(note => {
