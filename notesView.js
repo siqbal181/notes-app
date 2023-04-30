@@ -8,11 +8,11 @@ class NotesView {
       const noteInput = document.querySelector('#note-input').value;
       this.model.addNote(noteInput);
       this.displayNotes();
+      document.querySelector('#note-input').value = ''
     });
   }
 
   displayNotes() {
-    document.querySelector('#note-input').value = ''
     const allNotes = this.model.getNotes();
 
     allNotes.forEach(note => {
