@@ -30,4 +30,22 @@ describe('Notes view', () => {
 
     expect(document.querySelector('div.note').textContent).toEqual('Here is my note to test!!');
   })
+
+  it('verifies when displayNotes is called twice', () => {
+    document.body.innerHTML = fs.readFileSync('./index.html');
+    const model = new NotesModel;
+    const view = new NotesView(model);
+
+    const addNoteButton = document.querySelector('#note-button');
+
+    const noteInput = document.querySelector('#note-input');
+    noteInput.value = 'Here is my note to test!!';
+    addNoteButton.click();
+
+    const noteInputTwo = document.querySelector('#note-input');
+    noteInputTwo.value = 'Another note to test duplication!!';
+    addNoteButton.click();
+
+    expect(document.querySelectorAll('div.note').length).toEqual(2);
+  })
 });

@@ -13,8 +13,12 @@ class NotesView {
   }
 
   displayNotes() {
-    const allNotes = this.model.getNotes();
+    const notesToClear = document.querySelectorAll('.note');
+    notesToClear.forEach(note => {
+      note.remove();
+    })
 
+    const allNotes = this.model.getNotes();
     allNotes.forEach(note => {
       const noteEl = document.createElement('div');
       noteEl.textContent = note;
