@@ -11,6 +11,12 @@ class NotesView {
       this.displayNotes();
       document.querySelector('#note-input').value = ''
     });
+
+    // Working on displayNotesFromApi()
+    this.client.loadData(data => {
+      this.model.setNotes(data);
+      this.displayNotes();
+    });
   }
 
   displayNotes() {
@@ -21,6 +27,16 @@ class NotesView {
 
     const allNotes = this.model.getNotes();
     allNotes.forEach(note => {
+      const noteEl = document.createElement('div');
+      noteEl.textContent = note;
+      noteEl.className = 'note';
+      this.mainContainerEl.append(noteEl);
+    })
+  }
+
+  displayNotesFromApi() {
+    const allApiNotes = this.model.getNotes();
+    allApiNotes.forEach(note => {
       const noteEl = document.createElement('div');
       noteEl.textContent = note;
       noteEl.className = 'note';

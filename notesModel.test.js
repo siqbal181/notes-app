@@ -27,4 +27,9 @@ describe(('notesModel'), () => {
     model.reset();
     expect(model.getNotes()).toEqual([]);
   })
+
+  it('sets the notes to a new notes array', () => {
+    model.setNotes(['Buy milk', 'Go to the gym'])
+    expect(model.getNotes()).toEqual(['Buy milk', 'Go to the gym']);
+  })
 })

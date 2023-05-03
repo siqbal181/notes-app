@@ -5,6 +5,10 @@
 const fs = require('fs');
 const NotesModel = require('./notesModel');
 const NotesView = require('./notesView');
+const NotesClient = require('./notesClient');
+
+const jestFetchMock = require("jest-fetch-mock");
+jestFetchMock.enableMocks();
 
 describe('Notes view', () => {
   it('displays two notes', () => {
@@ -47,5 +51,24 @@ describe('Notes view', () => {
     addNoteButton.click();
 
     expect(document.querySelectorAll('div.note').length).toEqual(2);
+  })
+
+  it('displays notes from API on NotesView client class', () => {
+    document.body.innerHTML = fs.readFileSync('./index.html');
+    const model = new NotesModel;
+
+    // Mock the notesClient
+    const mockNotesClient = {
+      loadData: jest.fn(),
+    }
+
+    mockNotesClient.loadData.mockResolvedValueOnce({
+      note: 'This note is coming from the server',
+    })
+
+    // Run the rest as usual, making a new view with the mockNotesClient as an argument
+    const view = new NotesView(model, mockNotesClient);
+    // expect(view.displayNotesFromApi()).toBe('This note is coming from the server');
+    expect(model.getNotes()).toEqual('This note is coming from the server');
   })
 });
