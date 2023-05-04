@@ -2,15 +2,20 @@
  * @jest-environment jsdom
  */
 
+const jestFetchMock = require("jest-fetch-mock");
+jestFetchMock.enableMocks();
+jest.mock('./notesClient');
+
 const fs = require('fs');
 const NotesModel = require('./notesModel');
 const NotesView = require('./notesView');
 const NotesClient = require('./notesClient');
 
-const jestFetchMock = require("jest-fetch-mock");
-jestFetchMock.enableMocks();
-
 describe('Notes view', () => {
+  beforeEach(() => {
+    NotesClient.mockClear();
+  })
+
   it('displays two notes', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
     const model = new NotesModel;
@@ -53,22 +58,57 @@ describe('Notes view', () => {
     expect(document.querySelectorAll('div.note').length).toEqual(2);
   })
 
-  it('displays notes from API on NotesView client class', () => {
+  // Now working with the client API
+  test('displays notes from API on NotesView client class', async () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
-    const model = new NotesModel;
+    fetch.resetMocks();
 
-    // Mock the notesClient
+    const model = new NotesModel;
     const mockNotesClient = {
-      loadData: jest.fn(),
+      loadData: jest.fn()
     }
 
-    mockNotesClient.loadData.mockResolvedValueOnce({
-      note: 'This note is coming from the server',
-    })
-
-    // Run the rest as usual, making a new view with the mockNotesClient as an argument
     const view = new NotesView(model, mockNotesClient);
-    // expect(view.displayNotesFromApi()).toBe('This note is coming from the server');
-    expect(model.getNotes()).toEqual('This note is coming from the server');
+    expect(model.getNotes()).toEqual([])
+    
+    mockNotesClient.loadData.mockResolvedValueOnce(
+    model.setNotes(['this is a note', 'so is this']));
+    expect(mockNotesClient.loadData.mock.calls.length).toEqual(0);
+
+    await view.loadNotesFromApi()    
+    expect(mockNotesClient.loadData.mock.calls.length).toEqual(1);
+    expect(model.getNotes()).toEqual(['this is a note', 'so is this'])
   })
+
+  // using Async await fetch version
+  test('sets the notes through the API', async () => {
+    document.body.innerHTML = fs.readFileSync('./index.html');
+    const model = new NotesModel;
+    const mockClient = {
+      loadNotes: jest.fn()
+    }
+    mockClient.loadNotes.mockResolvedValueOnce(
+      ["some note", "some other note"]);
+    const view = new NotesView(model, mockClient)
+    await view.displayNotesFromApi()
+    const divs = document.querySelectorAll('div.note')
+    
+    expect(mockClient.loadNotes.mock.calls.length).toEqual(1);
+    expect(divs.length).toEqual(2)
+    expect(divs[0].innerHTML).toEqual('some note')
+    expect(divs[1].innerHTML).toEqual('some other note')
+  })
+  
+  // Trying to mock the implementation in jest
+  // test.only('fetches notes from the API', () => {
+  //   const mockNotesClient = new NotesClient();
+  //   const model = new NotesModel();
+
+  //   mockNotesClient.loadData.mockImplementation((callback) => callback(['This note is coming from the server']));
+
+  //   const view = new NotesView(model, mockNotesClient);
+  //   view.loadNotesFromApi();
+  //   expect(view.displayNotesFromApi()).toBe('This note is coming from the server');
+  // })
+
 });

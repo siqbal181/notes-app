@@ -2,7 +2,10 @@ class NotesModel {
   constructor() {
     this.notes = [];
   }
-  setNotes(notes) {
+  // setNotes(notes) {
+  //   this.notes = notes;
+  // }
+  setNotes = (notes) => {
     this.notes = notes;
   }
 

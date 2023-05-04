@@ -5,17 +5,12 @@ class NotesView {
     this.mainContainerEl = document.querySelector('#main-container');
     this.addNoteButton = document.querySelector('#note-button');
     
+    // dont forget to async your event listeners
     this.addNoteButton.addEventListener('click', () => {
       const noteInput = document.querySelector('#note-input').value;
       this.model.addNote(noteInput);
       this.displayNotes();
       document.querySelector('#note-input').value = ''
-    });
-
-    // Working on displayNotesFromApi()
-    this.client.loadData(data => {
-      this.model.setNotes(data);
-      this.displayNotes();
     });
   }
 
@@ -42,6 +37,17 @@ class NotesView {
       noteEl.className = 'note';
       this.mainContainerEl.append(noteEl);
     })
+  }
+
+  async loadNotesFromApi() {
+    await this.client.loadData(this.model.setNotes);
+  }
+
+  // without a callback
+  async displayNotesFromApi() {
+      const result = await this.client.loadNotes()
+      this.model.setNotes(result)
+      this.displayNotes()
   }
 }
 
