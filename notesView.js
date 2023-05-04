@@ -29,6 +29,10 @@ class NotesView {
     })
   }
 
+  async loadNotesFromApi() {
+    await this.client.loadData(this.model.setNotes);
+  }
+
   displayNotesFromApi() {
     const allApiNotes = this.model.getNotes();
     allApiNotes.forEach(note => {
@@ -39,12 +43,8 @@ class NotesView {
     })
   }
 
-  async loadNotesFromApi() {
-    await this.client.loadData(this.model.setNotes);
-  }
-
-  // without a callback
-  async displayNotesFromApi() {
+  // displayNotesFromAPIwithout a callback
+  async displayNotesFromApi2() {
       const result = await this.client.loadNotes()
       this.model.setNotes(result)
       this.displayNotes()
