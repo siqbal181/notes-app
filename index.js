@@ -10,4 +10,4 @@ const view = new NotesView(model, client);
 // notes.addNote('This is an example note');
 
 
-view.displayNotesFromApi();
+view.loadNotesFromApi();

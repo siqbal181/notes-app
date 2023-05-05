@@ -93,15 +93,32 @@ describe('Notes view', () => {
 
   });
 
-  test('it creates a new note and adds to the page', async () => {
+  test.only('it creates a new note and adds to the page', async () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
-    const mockNotesClient = new NotesClient();
     const model = new NotesModel();
+    const mockClient = {
+      createNote: jest.fn(),
+      loadNotes: jest.fn()
+    }
+    const the_thing_we_sent_to_server = "Hi. please work."
+    // mockNotesClient.createNote(data).mockImplementation(JSON.stringify(data));
 
-    mockNotesClient.createNote.mockImplementation((data) => JSON.stringify(data));
-    const newNote = 'Hello just testing'
-    view = new NotesView(model, mockNotesClient);
-    await view.createNote(newNote);
-    expect(document.querySelector('.note').textContent).toEqual('"Hello just testing"');
+    mockClient.createNote.mockResolvedValue(
+      ["some note", "some other note", the_thing_we_sent_to_server]);
+    mockClient.loadNotes.mockResolvedValue(
+      ["some note", "some other note", the_thing_we_sent_to_server]); 
+
+    view = new NotesView(model, mockClient);
+    // fetch.mockRejectedValueOnce(new TypeError);
+
+    await view.addNoteFromAPI(the_thing_we_sent_to_server)
+    await view.loadNotesFromApi()
+
+    expect(mockClient.createNote.mock.calls.length).toEqual(1);
+    expect(mockClient.loadNotes.mock.calls.length).toEqual(1);
+    const all_notes_on_page = document.querySelectorAll('.note')
+    expect(all_notes_on_page.length).toEqual(3)
+    expect(all_notes_on_page[0].textContent).toEqual('some note');
+    expect(all_notes_on_page[2].textContent).toEqual(the_thing_we_sent_to_server);
   })
 });

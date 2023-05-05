@@ -27,12 +27,14 @@ class NotesClient {
       });
 
       const result = await response.json();
+      console.log(result);
       return result;
     } catch (error) {
       console.log("Error:", error);
       throw error;
     }
   }
+
 }
 
 module.exports = NotesClient;

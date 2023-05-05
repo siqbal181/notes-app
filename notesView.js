@@ -5,10 +5,11 @@ class NotesView {
     this.mainContainerEl = document.querySelector('#main-container');
     this.addNoteButton = document.querySelector('#note-button');
     
-    // dont forget to async your event listeners
-    this.addNoteButton.addEventListener('click', () => {
+    this.addNoteButton.addEventListener('click', async () => {
       const noteInput = document.querySelector('#note-input').value;
-      this.model.addNote(noteInput);
+      // this.model.addNote(noteInput);
+      console.log(noteInput);
+      await this.addNoteFromAPI(noteInput);
       this.displayNotes();
       document.querySelector('#note-input').value = ''
     });
@@ -30,7 +31,9 @@ class NotesView {
   }
 
   async loadNotesFromApi() {
-    await this.client.loadData(this.model.setNotes);
+    // await this.client.loadData(this.model.setNotes);
+    const result = await this.client.loadNotes();
+    this.model.setNotes(result)
     this.displayNotes();
   }
 
@@ -39,16 +42,19 @@ class NotesView {
   }
 
   // displayNotesFromAPIwithout a callback
-  async displayNotesFromApi2() {
-      const result = await this.client.loadNotes()
-      this.model.setNotes(result)
-      this.displayNotes()
-  }
+  // async displayNotesFromApi2() {
+  //     const result = await this.client.loadNotes()
+  //     this.model.setNotes(result)
+  //     this.displayNotes()
+  // }
 
-  async createNote(data) {
+  // async addNoteFromAPI() {
+  //   const result = await this.client.createNote(document.querySelector('#note-input').value);
+  //   // this.model.addNote(result);
+  //   this.loadNotesFromApi();
+  // }
+  async addNoteFromAPI(data) {
     const result = await this.client.createNote(data);
-    this.model.addNote(result);
-    this.loadNotesFromApi();
   }
 }
 

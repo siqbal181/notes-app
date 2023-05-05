@@ -1,6 +1,6 @@
 const NotesClient = require('./notesClient');
 
-require('jest-fetch-mock').enableMocks()
+require('jest-fetch-mock').enableMocks();
 
 describe('Client class', () => {
   afterEach(() => {
@@ -34,22 +34,23 @@ describe('Client class', () => {
   });
 
   it('creates notes by POST request and sends to server', async () => {
-     const client = new NotesClient();
-     const data = 'my note';
-     const expectedBodyData = { content: data };
-     const expectedResponseData = { id: 1, content: data };
+    const client = new NotesClient();
+    const data = 'my note';
+    const expectedResponseData = { id: 1, content: data };
 
-     fetchMock.mockResponseOnce(JSON.stringify(expectedResponseData));
+    fetchMock.mockResponseOnce(JSON.stringify(expectedResponseData));
 
-     const result = await client.createNote(data);
-     expect(fetchMock.mock.calls.length).toEqual(1);
-     expect(fetchMock.mock.calls[0][0]).toEqual('http://localhost:3000/notes');
-     expect(fetchMock.mock.calls[0][1]).toEqual({
+    const expectedBodyData = { content: data }; // Fixed variable name
+
+    const result = await client.createNote(data);
+    expect(fetchMock.mock.calls.length).toEqual(1);
+    expect(fetchMock.mock.calls[0][0]).toEqual('http://localhost:3000/notes');
+    expect(fetchMock.mock.calls[0][1]).toEqual({
       method: 'POST',
-      headers : {
+      headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(expectedBodyData),
+      body: JSON.stringify(expectedBodyData), // Fixed typo here
     });
 
     expect(result).toEqual(expectedResponseData);
