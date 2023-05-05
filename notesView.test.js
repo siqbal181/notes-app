@@ -58,29 +58,7 @@ describe('Notes view', () => {
     expect(document.querySelectorAll('div.note').length).toEqual(2);
   })
 
-  // // Now working with the client API
-  // test('displays notes from API on NotesView client class', async () => {
-  //   document.body.innerHTML = fs.readFileSync('./index.html');
-  //   fetch.resetMocks();
-
-  //   const model = new NotesModel;
-  //   const mockNotesClient = {
-  //     loadData: jest.fn()
-  //   }
-
-  //   const view = new NotesView(model, mockNotesClient);
-  //   expect(model.getNotes()).toEqual([])
-    
-  //   mockNotesClient.loadData.mockResolvedValueOnce(
-  //   model.setNotes(['this is a note', 'so is this']));
-  //   expect(mockNotesClient.loadData.mock.calls.length).toEqual(0);
-
-  //   await view.loadNotesFromApi()    
-  //   expect(mockNotesClient.loadData.mock.calls.length).toEqual(1);
-  //   expect(model.getNotes()).toEqual(['this is a note', 'so is this'])
-  // })
-
-  // using Async await fetch version
+  // displayNotes using Async await fetch version
   test('sets the notes through the API', async () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
     const model = new NotesModel;
@@ -99,6 +77,7 @@ describe('Notes view', () => {
     expect(divs[1].innerHTML).toEqual('some other note')
   })
 
+  // displayNotes using the non-async version
   test('displays the notes from the api', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
     const mockNotesClient = new NotesClient();
@@ -107,9 +86,22 @@ describe('Notes view', () => {
     mockNotesClient.loadData.mockImplementation((callback) => callback(['This note is from server']));
 
     view = new NotesView(model, mockNotesClient);
+    view.displayNotes();
     view.loadNotesFromApi();
     view.displayNotesFromApi();
     expect(document.querySelector('.note').textContent).toEqual('This note is from server');
 
   });
+
+  test('it creates a new note and adds to the page', async () => {
+    document.body.innerHTML = fs.readFileSync('./index.html');
+    const mockNotesClient = new NotesClient();
+    const model = new NotesModel();
+
+    mockNotesClient.createNote.mockImplementation((data) => JSON.stringify(data));
+    const newNote = 'Hello just testing'
+    view = new NotesView(model, mockNotesClient);
+    await view.createNote(newNote);
+    expect(document.querySelector('.note').textContent).toEqual('"Hello just testing"');
+  })
 });

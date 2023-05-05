@@ -31,10 +31,10 @@ class NotesView {
 
   async loadNotesFromApi() {
     await this.client.loadData(this.model.setNotes);
+    this.displayNotes();
   }
 
   displayNotesFromApi() {
-    const allApiNotes = this.model.getNotes();
     this.displayNotes();
   }
 
@@ -43,6 +43,12 @@ class NotesView {
       const result = await this.client.loadNotes()
       this.model.setNotes(result)
       this.displayNotes()
+  }
+
+  async createNote(data) {
+    const result = await this.client.createNote(data);
+    this.model.addNote(result);
+    this.loadNotesFromApi();
   }
 }
 
