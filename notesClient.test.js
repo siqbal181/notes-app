@@ -3,6 +3,10 @@ const NotesClient = require('./notesClient');
 require('jest-fetch-mock').enableMocks()
 
 describe('Client class', () => {
+  afterEach(() => {
+    fetchMock.resetMocks();
+  });
+
   it('calls fetch and loads data', (done) => {
     // 1. Instantiate the class
     const client = new NotesClient();
@@ -27,5 +31,27 @@ describe('Client class', () => {
 
       done();
     });
+  });
+
+  it('creates notes by POST request and sends to server', async () => {
+     const client = new NotesClient();
+     const data = 'my note';
+     const expectedBodyData = { content: data };
+     const expectedResponseData = { id: 1, content: data };
+
+     fetchMock.mockResponseOnce(JSON.stringify(expectedResponseData));
+
+     const result = await client.createNote(data);
+     expect(fetchMock.mock.calls.length).toEqual(1);
+     expect(fetchMock.mock.calls[0][0]).toEqual('http://localhost:3000/notes');
+     expect(fetchMock.mock.calls[0][1]).toEqual({
+      method: 'POST',
+      headers : {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expectedBodyData),
+    });
+
+    expect(result).toEqual(expectedResponseData);
   });
 });

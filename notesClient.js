@@ -23,13 +23,14 @@ class NotesClient {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({content: data}),
       });
 
       const result = await response.json();
-      console.log("Success", result);
+      return result;
     } catch (error) {
       console.log("Error:", error);
+      throw error;
     }
   }
 }
