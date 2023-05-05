@@ -35,12 +35,7 @@ class NotesView {
 
   displayNotesFromApi() {
     const allApiNotes = this.model.getNotes();
-    allApiNotes.forEach(note => {
-      const noteEl = document.createElement('div');
-      noteEl.textContent = note;
-      noteEl.className = 'note';
-      this.mainContainerEl.append(noteEl);
-    })
+    this.displayNotes();
   }
 
   // displayNotesFromAPIwithout a callback

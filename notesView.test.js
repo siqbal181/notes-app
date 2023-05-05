@@ -99,7 +99,7 @@ describe('Notes view', () => {
     expect(divs[1].innerHTML).toEqual('some other note')
   })
 
-  test.only('displays the notes from the api', () => {
+  test('displays the notes from the api', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
     const mockNotesClient = new NotesClient();
     const model = new NotesModel();
